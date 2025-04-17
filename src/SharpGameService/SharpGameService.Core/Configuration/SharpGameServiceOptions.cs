@@ -13,5 +13,7 @@ namespace SharpGameService.Core.Configuration
         public int MaxPlayersPerRoom { get; set; } = 1;
 
         public int MaxRooms { get; set; } = 1;
+
+        public int MaxMessageSizeKb { get; set; } = 4;
     }
 }
