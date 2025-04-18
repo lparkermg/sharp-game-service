@@ -8,7 +8,7 @@ namespace SharpGameService.Core
     /// </summary>
     public sealed class House : IHouse
     {
-        public void CreateRoom(string roomId, string roomCode, string dataFileName)
+        public void CreateRoom(string roomId, string roomCode)
         {
             throw new NotImplementedException();
         }
@@ -18,7 +18,7 @@ namespace SharpGameService.Core
             throw new NotImplementedException();
         }
 
-        public void Initialise(bool initialiseRoom, string saveFolder, int maxRooms)
+        public void Initialise(bool initialiseRoom, int maxRooms)
         {
             throw new NotImplementedException();
         }

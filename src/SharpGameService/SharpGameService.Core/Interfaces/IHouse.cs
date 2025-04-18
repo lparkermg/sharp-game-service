@@ -12,15 +12,14 @@ namespace SharpGameService.Core.Interfaces
         /// </summary>
         /// <param name="initialiseRoom">Whether a room should be initialised</param>
         /// <param name="saveFolder"></param>
-        void Initialise(bool initialiseRoom, string saveFolder, int maxRooms);
+        void Initialise(bool initialiseRoom, int maxRooms);
 
         /// <summary>
         /// Creates a room with the specified ID and code.
         /// </summary>
         /// <param name="roomId">Id of the room</param>
         /// <param name="roomCode">Code of the room, if any.</param>
-        /// <param name="dataFileName">Name of the data file to use. Will load the file if it already exists.</param>
-        void CreateRoom(string roomId, string roomCode, string dataFileName);
+        void CreateRoom(string roomId, string roomCode);
 
         /// <summary>
         /// Joins a room with the specified ID and code.
