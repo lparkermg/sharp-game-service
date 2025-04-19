@@ -4,10 +4,10 @@
     {
         public bool SinglePlayer { get; set; } = true;
 
-        public int MaxPlayersPerRoom { get; set; } = 1;
+        public uint MaxPlayersPerRoom { get; set; } = 1;
 
-        public int MaxRooms { get; set; } = 1;
+        public uint MaxRooms { get; set; } = 1;
 
-        public int MaxMessageSizeKb { get; set; } = 4;
+        public uint MaxMessageSizeKb { get; set; } = 4;
     }
 }

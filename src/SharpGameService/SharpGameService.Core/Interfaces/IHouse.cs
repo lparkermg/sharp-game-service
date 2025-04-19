@@ -8,13 +8,6 @@ namespace SharpGameService.Core.Interfaces
     public interface IHouse
     {
         /// <summary>
-        /// Initialises the house with the specified parameters.
-        /// </summary>
-        /// <param name="initialiseRoom">Whether a room should be initialised</param>
-        /// <param name="saveFolder"></param>
-        void Initialise(bool initialiseRoom, int maxRooms);
-
-        /// <summary>
         /// Creates a room with the specified ID and code.
         /// </summary>
         /// <param name="roomId">Id of the room</param>
