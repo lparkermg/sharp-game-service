@@ -1,4 +1,5 @@
-﻿using SharpGameService.Core.Exceptions;
+﻿using SharpGameService.Core.Events;
+using SharpGameService.Core.Exceptions;
 using SharpGameService.Core.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -21,6 +22,7 @@ namespace SharpGameService.Core
 
         public bool RoomClosing { get; private set; } = false;
 
+        // TODO: Have a model for that includes the player details and connection.
         private IList<WebSocket> _connections = new List<WebSocket>();
 
         private bool _closeOnEmpty = false;
@@ -29,6 +31,14 @@ namespace SharpGameService.Core
         private bool _isInitialised = false;
 
         private DateTime? _closeConnectionTime = null;
+
+        public event OnMessageReceivedEventHandler OnMessageReceived;
+        public event OnPlayerJoinedEventHandler OnPlayerJoined;
+        public event OnPlayerDisconnectedEventHandler OnPlayerDisconnected;
+
+        public delegate void OnMessageReceivedEventHandler(object sender, OnMessageReceivedEventArgs data);
+        public delegate void OnPlayerJoinedEventHandler(object sender, OnPlayerJoinedEventArgs data);
+        public delegate void OnPlayerDisconnectedEventHandler(object sender, OnPlayerDisconnectedEventArgs data);
 
         public void Initialise(string roomId, string roomCode, uint maxPlayers, bool closeOnEmpty, TimeSpan? closeWaitTime = null)
         {
@@ -52,6 +62,7 @@ namespace SharpGameService.Core
             _isInitialised = true;
         }
 
+        // TODO: Change to include something like player details?
         public void Join(WebSocket connection)
         {
             if (!_isInitialised)
@@ -65,6 +76,9 @@ namespace SharpGameService.Core
             }
 
             _connections.Add(connection);
+
+            // TODO: Setup data object based on player details sent with connection or the game will handle any details.
+            OnPlayerJoined?.Invoke(this, new OnPlayerJoinedEventArgs(new object()));
         }
 
         public Task Process()
@@ -81,6 +95,7 @@ namespace SharpGameService.Core
             foreach(var connection in closedConnections)
             {
                 _connections.Remove(connection);
+                OnPlayerDisconnected?.Invoke(this, new OnPlayerDisconnectedEventArgs(string.Empty));
             }
 
             if (_closeOnEmpty && CurrentPlayers == 0)
@@ -98,6 +113,16 @@ namespace SharpGameService.Core
             }
 
             return Task.CompletedTask;
+        }
+
+        public void HandleReceivedMessage(object data)
+        {
+            if (!_isInitialised)
+            {
+                throw new InvalidOperationException("The room has not been initialised");
+            }
+
+            OnMessageReceived?.Invoke(this, new OnMessageReceivedEventArgs(data));
         }
     }
 }
