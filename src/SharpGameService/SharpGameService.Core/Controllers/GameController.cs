@@ -1,18 +1,55 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using SharpGameService.Core.Configuration;
 using SharpGameService.Core.Interfaces;
 using SharpGameService.Core.Messaging;
 using SharpGameService.Core.Messaging.DataModels;
+using SharpGameService.Core.Models.Requests;
 using System.Net.WebSockets;
 using System.Text.Json;
 
 namespace SharpGameService.Core.Controllers
 {
-    public class GameController(ILogger<GameController> logger, IHouse house) : ControllerBase
+    public class GameController(ILogger<GameController> logger, IOptions<SharpGameServiceOptions> options, IHouse house) : ControllerBase
     {
+        [HttpPost("/game")]
+        public IActionResult CreateRoom([FromBody] CreateRoomRequest body)
+        {
+            if (string.IsNullOrWhiteSpace(body.RoomId))
+            {
+                logger.LogError("Room ID is required.");
+                return BadRequest("Room ID is required.");
+            }
+
+            if (string.IsNullOrWhiteSpace(body.RoomCode))
+            {
+                logger.LogError("Room code is required.");
+                return BadRequest("Room code is required.");
+            }
+
+            if (house.DoesRoomExist(body.RoomId))
+            {
+                logger.LogWarning("Room already exists: {roomId}", body.RoomId);
+                return Conflict("Room already exists.");
+            }
+
+            try
+            {
+                house.CreateRoom(body.RoomId, body.RoomCode);
+                logger.LogInformation("Room created successfully: {roomId}", body.RoomId);
+                return Created($"/game/{body.RoomId}", new object());
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Failed to create room: {roomId}", body.RoomId);
+                return StatusCode(StatusCodes.Status500InternalServerError, "Failed to create room.");
+            }
+        }
+
         [Route("/game/{gameRoomId}")]
-        public async void Get([FromRoute] string gameRoomId)
+        public async Task Get([FromRoute] string gameRoomId)
         {
             if (HttpContext.WebSockets.IsWebSocketRequest)
             {
@@ -35,13 +72,13 @@ namespace SharpGameService.Core.Controllers
             {
                 HttpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
                 HttpContext.Response.ContentType = "text/plain";
-                HttpContext.Response.WriteAsync("WebSocket connection required.");
+                await HttpContext.Response.WriteAsync("WebSocket connection required.");
             }
         }
 
         private async Task ProcessIncomingMessagesAsync(WebSocket webSocket, string providedRoomId)
         {
-            var buffer = new byte[1024 * 4];
+            var buffer = new byte[1024 * options.Value.MaxMessageSizeKb];
             var msgResult = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
 
             while (!webSocket.CloseStatus.HasValue)

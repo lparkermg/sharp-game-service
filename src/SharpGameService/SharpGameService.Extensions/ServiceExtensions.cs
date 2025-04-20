@@ -24,7 +24,7 @@ namespace SharpGameService.Extensions
         {
             // Setup any settings for the service.
 
-            // We should be using controllers, but they would likely be mapped in the application rather than the package.
+            // We should be using controllers, but they will need to be mapped in the application rather than the package.
 
             // Setup websockets
             host.UseWebSockets(socketOptions);
