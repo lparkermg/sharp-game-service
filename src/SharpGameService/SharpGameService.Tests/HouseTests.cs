@@ -1,11 +1,6 @@
 ﻿using SharpGameService.Core;
 using SharpGameService.Core.Exceptions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.WebSockets;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SharpGameService.Tests
 {
@@ -139,6 +134,33 @@ namespace SharpGameService.Tests
                 Assert.That(metadata.CurrentPlayers, Is.EqualTo(0));
             });
         }
+
+        // TODO: Implement ProcessAsync tests when there's a good way to do it.
+
+        [TestCase("")]
+        [TestCase("     ")]
+        [TestCase(null)]
+        public void MessageReceived_GivenInvalidRoomId_ThrowsArgumentException(string? roomId)
+        {
+            Assert.That(() => _house.MessageReceived(roomId, "test data"), Throws.ArgumentException.With.Message.EqualTo("Room Id must be populated"));
+        }
+
+        [TestCase("")]
+        [TestCase("     ")]
+        [TestCase(null)]
+        public void MessageReceived_GivenInvalidMessageData_ThrowsArgumentException(string? messageData)
+        {
+            Assert.That(() => _house.MessageReceived("roomId", messageData), Throws.ArgumentException.With.Message.EqualTo("Message must be populated"));
+        }
+
+        [Test]
+        public void MessageReceived_GivenNonExistingRoomId_ThrowsRoomNotFoundException()
+        {
+            string roomId = "NonExistingRoomId";
+            Assert.That(() => _house.MessageReceived(roomId, "test data"), Throws.TypeOf<RoomNotFoundException>().And.With.Message.EqualTo("The room for the provided Id does not exist"));
+        }
+
+        // TODO: Implement MessageReceived valid tests when there's a good way to do it.
 
         private WebSocket CreateWebSocket()
         {

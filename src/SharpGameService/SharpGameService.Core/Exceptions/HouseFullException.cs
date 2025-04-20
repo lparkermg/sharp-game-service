@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SharpGameService.Core.Exceptions
+﻿namespace SharpGameService.Core.Exceptions
 {
     public class HouseFullException : Exception
     {

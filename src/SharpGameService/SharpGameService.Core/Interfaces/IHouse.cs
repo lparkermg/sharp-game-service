@@ -42,5 +42,13 @@ namespace SharpGameService.Core.Interfaces
         /// <param name="roomId">The Id of the room.</param>
         /// <returns>The <see cref="RoomMetadata"/> of the room.</returns>
         RoomMetadata GetRoomMetadata(string roomId);
+
+        /// <summary>
+        /// Handles messages received outside of the room (usually by the websocket connection).
+        /// </summary>
+        /// <param name="roomId">Id of the room</param>
+        /// <param name="message">Message data.</param>
+        /// <returns></returns>
+        void MessageReceived(string roomId, string message);
     }
 }

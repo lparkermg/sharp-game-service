@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Options;
-using SharpGameService.Core.Exceptions;
+﻿using SharpGameService.Core.Exceptions;
 using SharpGameService.Core.Interfaces;
 using SharpGameService.Core.Models;
 using System.Net.WebSockets;
@@ -58,9 +57,12 @@ namespace SharpGameService.Core
             room.Join(connection);
         }
 
-        public Task ProcessAsync()
+        public async Task ProcessAsync()
         {
-            throw new NotImplementedException();
+            foreach(var room in _rooms)
+            {
+                await room.Process();
+            }
         }
 
         public RoomMetadata GetRoomMetadata(string roomId)
@@ -81,6 +83,28 @@ namespace SharpGameService.Core
                 MaxPlayers = room.MaxPlayers,
                 CurrentPlayers = room.CurrentPlayers,
             };
+        }
+
+        public void MessageReceived(string roomId, string message)
+        {
+            if (string.IsNullOrWhiteSpace(roomId))
+            {
+                throw new ArgumentException("Room Id must be populated");
+            }
+
+            if (string.IsNullOrWhiteSpace(message))
+            {
+                throw new ArgumentException("Message must be populated");
+            }
+
+            if (!DoesRoomExist(roomId))
+            {
+                throw new RoomNotFoundException();
+            }
+            
+            var room = _rooms.Single(x => x.Id == roomId);
+
+            room.HandleReceivedMessage(message);
         }
     }
 }

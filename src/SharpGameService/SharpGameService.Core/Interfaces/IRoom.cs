@@ -58,6 +58,6 @@ namespace SharpGameService.Core.Interfaces
         /// Handles messages received outside of the room (usually by the websocket connection). 
         /// </summary>
         /// <param name="data">The message data for the implemented room to process.</param>
-        void HandleReceivedMessage(object data);
+        void HandleReceivedMessage(string data);
     }
 }

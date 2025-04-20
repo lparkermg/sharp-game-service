@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SharpGameService.Core.Events
+﻿namespace SharpGameService.Core.Events
 {
     // TOOD: Might change this to be a typed object instead of a generic object to include certain required details.
     /// <summary>

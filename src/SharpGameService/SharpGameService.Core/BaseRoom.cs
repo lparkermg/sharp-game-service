@@ -1,12 +1,7 @@
 ﻿using SharpGameService.Core.Events;
 using SharpGameService.Core.Exceptions;
 using SharpGameService.Core.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.WebSockets;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SharpGameService.Core
 {
@@ -63,7 +58,6 @@ namespace SharpGameService.Core
         }
 
         // TODO: Change to include something like player details?
-        // TODO: Include room code to try and join the room.
         public void Join(WebSocket connection)
         {
             if (!_isInitialised)
@@ -116,7 +110,7 @@ namespace SharpGameService.Core
             return Task.CompletedTask;
         }
 
-        public void HandleReceivedMessage(object data)
+        public void HandleReceivedMessage(string data)
         {
             if (!_isInitialised)
             {
