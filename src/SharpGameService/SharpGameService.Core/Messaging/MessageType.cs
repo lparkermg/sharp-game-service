@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SharpGameService.Core.Messaging
+﻿namespace SharpGameService.Core.Messaging
 {
+    /// <summary>
+    /// Enumeration representing the different types of messages that can be sent or recieved.
+    /// </summary>
     public enum MessageType
     {
         // in house actions

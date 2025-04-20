@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SharpGameService.Core.Messaging
+﻿namespace SharpGameService.Core.Messaging
 {
     /// <summary>
     /// Message class used to send messages between the client and server.

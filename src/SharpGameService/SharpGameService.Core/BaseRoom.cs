@@ -6,16 +6,26 @@ using System.Net.WebSockets;
 
 namespace SharpGameService.Core
 {
+    /// <summary>
+    /// The base room implementation.
+    /// 
+    /// This handles the basic functionality of a room, such as joining, leaving and processing. Along with the non-specific validation needed for each.
+    /// </summary>
     public class BaseRoom : IRoom
     {
+        /// <inheritdoc />
         public uint MaxPlayers { get; private set; }
 
+        /// <inheritdoc />
         public uint CurrentPlayers => (uint)_connections.Count;
 
+        /// <inheritdoc />
         public string Id { get; private set; }
 
+        /// <inheritdoc />
         public string Code { get; private set; }
 
+        /// <inheritdoc />
         public bool RoomClosing { get; private set; } = false;
 
         private IList<WebSocket> _connections = new List<WebSocket>();
@@ -35,6 +45,7 @@ namespace SharpGameService.Core
         public delegate void OnPlayerJoinedEventHandler(object sender, OnPlayerJoinedEventArgs data);
         public delegate void OnPlayerDisconnectedEventHandler(object sender, OnPlayerDisconnectedEventArgs data);
 
+        /// <inheritdoc />
         public void Initialise(string roomId, string roomCode, uint maxPlayers, bool closeOnEmpty, TimeSpan? closeWaitTime = null)
         {
             if (string.IsNullOrWhiteSpace(roomId))
@@ -57,6 +68,7 @@ namespace SharpGameService.Core
             _isInitialised = true;
         }
 
+        /// <inheritdoc />
         public void Join(string playerName, string playerId, WebSocket connection)
         {
             if (!_isInitialised)
@@ -84,6 +96,7 @@ namespace SharpGameService.Core
             OnPlayerJoined?.Invoke(this, new OnPlayerJoinedEventArgs(new PlayerJoinedModel { PlayerId = playerId, PlayerName = playerName}));
         }
 
+        /// <inheritdoc />
         public Task Process()
         {
             if (!_isInitialised)
@@ -118,6 +131,7 @@ namespace SharpGameService.Core
             return Task.CompletedTask;
         }
 
+        /// <inheritdoc />
         public void HandleReceivedMessage(string data)
         {
             if (!_isInitialised)

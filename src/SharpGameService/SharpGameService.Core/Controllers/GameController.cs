@@ -12,8 +12,19 @@ using System.Text.Json;
 
 namespace SharpGameService.Core.Controllers
 {
+    /// <summary>
+    /// Controller for managing game rooms.
+    /// </summary>
+    /// <param name="logger">The services logger.</param>
+    /// <param name="options">The options for the service.</param>
+    /// <param name="house">The house users are connecting to.</param>
     public class GameController(ILogger<GameController> logger, IOptions<SharpGameServiceOptions> options, IHouse house) : ControllerBase
     {
+        /// <summary>
+        /// The endpoint for creating a room.
+        /// </summary>
+        /// <param name="body">The body of the request containing the room id and code to setup with.</param>
+        /// <returns>The result of the action.</returns>
         [HttpPost("/game")]
         public IActionResult CreateRoom([FromBody] CreateRoomRequest body)
         {
@@ -48,6 +59,11 @@ namespace SharpGameService.Core.Controllers
             }
         }
 
+        /// <summary>
+        /// The route for connecting to a game room.
+        /// </summary>
+        /// <param name="gameRoomId">The id of the room.</param>
+        /// <returns>A task representing an async operation.</returns>
         [Route("/game/{gameRoomId}")]
         public async Task Get([FromRoute] string gameRoomId)
         {

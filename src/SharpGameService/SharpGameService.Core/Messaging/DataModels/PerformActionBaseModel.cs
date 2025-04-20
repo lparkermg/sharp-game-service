@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SharpGameService.Core.Messaging.DataModels
+﻿namespace SharpGameService.Core.Messaging.DataModels
 {
     /// <summary>
     /// Data model used for performing an action in a game room.

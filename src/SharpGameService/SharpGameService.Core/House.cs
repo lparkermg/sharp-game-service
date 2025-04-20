@@ -18,6 +18,7 @@ namespace SharpGameService.Core
 
         private IList<TRoomType> _rooms = new List<TRoomType>();
 
+        /// <inheritdoc />
         public void CreateRoom(string roomId, string roomCode)
         {
             if (string.IsNullOrWhiteSpace(roomId))
@@ -35,11 +36,13 @@ namespace SharpGameService.Core
             _rooms.Add(newRoom);
         }
 
+        /// <inheritdoc />
         public bool DoesRoomExist(string roomId)
         {
             return _rooms.Any(x => x.Id == roomId);
         }
 
+        /// <inheritdoc />
         public void Join(string roomId, string code, string playerName, WebSocket connection)
         {
             if (string.IsNullOrWhiteSpace(roomId))
@@ -63,6 +66,7 @@ namespace SharpGameService.Core
             room.Join(playerName, id, connection);
         }
 
+        /// <inheritdoc />
         public async Task ProcessAsync()
         {
             foreach(var room in _rooms)
@@ -71,6 +75,7 @@ namespace SharpGameService.Core
             }
         }
 
+        /// <inheritdoc />
         public RoomMetadata GetRoomMetadata(string roomId)
         {
             if (string.IsNullOrWhiteSpace(roomId))
@@ -91,6 +96,7 @@ namespace SharpGameService.Core
             };
         }
 
+        /// <inheritdoc />
         public void MessageReceived(string roomId, string message)
         {
             if (string.IsNullOrWhiteSpace(roomId))
