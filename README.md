@@ -2,6 +2,11 @@
 
 A small and relatively basic library for building game servers and server based game logic.
 
+## Packages
+
+- [SharpGameService.Core](https://www.nuget.org/packages/SharpGameService.Core)
+- [SharpGameService.Extensions](https://www.nuget.org/packages/SharpGameService.Extensions)
+
 ## Library specific readmes
 
 - [SharpGameService.Core README](./src/SharpGameService/SharpGameService.Core/Documentation/README.md)
