@@ -45,8 +45,10 @@ namespace SharpGameService.Core.Interfaces
         /// <summary>
         /// Joins the room with the specified connection.
         /// </summary>
+        /// <param name="playerId">Id of the player.</param>
+        /// <param name="playerName">Name of the player.</param>
         /// <param name="connection">The players connection.</param>
-        void Join(WebSocket connection);
+        void Join(string playerName, string playerId, WebSocket connection);
 
         /// <summary>
         /// Processes and automatic details of the room.

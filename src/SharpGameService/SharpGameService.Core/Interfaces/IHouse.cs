@@ -20,8 +20,9 @@ namespace SharpGameService.Core.Interfaces
         /// </summary>
         /// <param name="roomdId">Id of the room.</param>
         /// <param name="code">Code of the room.</param>
+        /// <param name="playerName">Name of the user joining the room.</param>
         /// <param name="connection">The users connection.</param>
-        void Join(string roomdId, string code, WebSocket connection);
+        void Join(string roomdId, string code, string playerName, WebSocket connection);
 
         /// <summary>
         /// Checks whether the room with the specified ID exists.

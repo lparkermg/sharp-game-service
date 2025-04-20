@@ -74,7 +74,18 @@ namespace SharpGameService.Tests
         public void Join_GivenInvalidRoomId_ThrowsArgumentException(string? roomId)
         {
             string roomCode = "TestRoomCode";
-            Assert.That(() => _house.Join(roomId, roomCode, CreateWebSocket()), Throws.ArgumentException.With.Message.EqualTo("Room Id must be populated"));
+            string playerName = "TestPlayer";
+            Assert.That(() => _house.Join(roomId, roomCode, playerName, CreateWebSocket()), Throws.ArgumentException.With.Message.EqualTo("Room Id must be populated"));
+        }
+
+        [TestCase("")]
+        [TestCase("     ")]
+        [TestCase(null)]
+        public void Join_GivenInvalidPlayerName_ThrowsArgumentException(string? playerName)
+        {
+            string roomCode = "TestRoomCode";
+            string roomId = "roomId";
+            Assert.That(() => _house.Join(roomId, roomCode, playerName, CreateWebSocket()), Throws.ArgumentException.With.Message.EqualTo("Player Name must be populated"));
         }
 
         [Test]
@@ -82,7 +93,8 @@ namespace SharpGameService.Tests
         {
             string roomId = "NonExistingRoomId";
             string roomCode = "TestRoomCode";
-            Assert.That(() => _house.Join(roomId, roomCode, CreateWebSocket()), Throws.TypeOf<RoomNotFoundException>().And.With.Message.EqualTo("The room for the provided Id does not exist"));
+            string playerName = "TestPlayer";
+            Assert.That(() => _house.Join(roomId, roomCode, playerName, CreateWebSocket()), Throws.TypeOf<RoomNotFoundException>().And.With.Message.EqualTo("The room for the provided Id does not exist"));
         }
 
         [Test]
@@ -90,8 +102,9 @@ namespace SharpGameService.Tests
         {
             string roomId = "TestRoomId";
             string roomCode = "TestRoomCode";
+            string playerName = "TestPlayer";
             _house.CreateRoom(roomId, roomCode);
-            Assert.That(() => _house.Join(roomId, "WrongCode", CreateWebSocket()), Throws.TypeOf<InvalidRoomCodeException>().And.With.Message.EqualTo("The room code provided is invalid"));
+            Assert.That(() => _house.Join(roomId, "WrongCode", playerName, CreateWebSocket()), Throws.TypeOf<InvalidRoomCodeException>().And.With.Message.EqualTo("The room code provided is invalid"));
         }
 
         [Test]
@@ -99,9 +112,10 @@ namespace SharpGameService.Tests
         {
             string roomId = "TestRoomId";
             string roomCode = "TestRoomCode";
+            string playerName = "TestPlayer";
             _house.CreateRoom(roomId, roomCode);
             var playerWebSocket = CreateWebSocket();
-            _house.Join(roomId, roomCode, playerWebSocket);
+            _house.Join(roomId, roomCode, playerName, playerWebSocket);
             Assert.That(_house.GetRoomMetadata(roomId).CurrentPlayers, Is.EqualTo(1));
         }
 

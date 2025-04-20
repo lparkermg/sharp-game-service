@@ -40,11 +40,16 @@ namespace SharpGameService.Core
             return _rooms.Any(x => x.Id == roomId);
         }
 
-        public void Join(string roomId, string code, WebSocket connection)
+        public void Join(string roomId, string code, string playerName, WebSocket connection)
         {
             if (string.IsNullOrWhiteSpace(roomId))
             {
                 throw new ArgumentException("Room Id must be populated");
+            }
+
+            if (string.IsNullOrWhiteSpace(playerName))
+            {
+                throw new ArgumentException("Player Name must be populated");
             }
 
             if (!DoesRoomExist(roomId))
@@ -54,7 +59,8 @@ namespace SharpGameService.Core
 
             var room = _rooms.SingleOrDefault(x => x.Id == roomId && x.Code == code) ?? throw new InvalidRoomCodeException();
 
-            room.Join(connection);
+            var id = Guid.NewGuid().ToString();
+            room.Join(playerName, id, connection);
         }
 
         public async Task ProcessAsync()

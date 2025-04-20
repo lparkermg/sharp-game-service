@@ -56,11 +56,33 @@ namespace SharpGameService.Tests
             });
         }
 
+        [TestCase("")]
+        [TestCase("    ")]
+        [TestCase(null)]
+        public void Join_GivenInvalidPlayerId_ThrowsArgumentException(string? id)
+        {
+            var connection = CreateWebSocket();
+            _room.Initialise("id", "code", 4, true);
+            Assert.That(() => _room.Join("name", id, connection),
+                Throws.ArgumentException.With.Message.EqualTo("Player Id must be populated"));
+        }
+
+        [TestCase("")]
+        [TestCase("    ")]
+        [TestCase(null)]
+        public void Join_GivenInvalidPlayerName_ThrowsArgumentException(string? name)
+        {
+            var connection = CreateWebSocket();
+            _room.Initialise("id", "code", 4, true);
+            Assert.That(() => _room.Join(name, "id", connection),
+                Throws.ArgumentException.With.Message.EqualTo("Player Name must be populated"));
+        }
+
         [Test]
         public void Join_GivenUninitialisedRoom_ThrowsInvalidOperationException()
         {
             var connection = CreateWebSocket();
-            Assert.That(() => _room.Join(connection),
+            Assert.That(() => _room.Join("name", "id", connection),
                 Throws.InvalidOperationException.With.Message.EqualTo("The room has not been initialised"));
         }
 
@@ -70,8 +92,8 @@ namespace SharpGameService.Tests
             _room.Initialise("id", "code", 1, false);
             var connection1 = CreateWebSocket();
             var connection2 = CreateWebSocket();
-            _room.Join(connection1);
-            Assert.That(() => _room.Join(connection2),
+            _room.Join("name", "id", connection1);
+            Assert.That(() => _room.Join("name", "id", connection2),
                 Throws.Exception.TypeOf<RoomFullException>()
                 .And.With.Message.EqualTo("The room you're trying to enter is full"));
         }
@@ -81,7 +103,7 @@ namespace SharpGameService.Tests
         {
             _room.Initialise("id", "code", 2, false);
             var connection = CreateWebSocket();
-            _room.Join(connection);
+            _room.Join("name", "id", connection);
             Assert.That(_room.CurrentPlayers, Is.EqualTo(1));
         }
 
@@ -90,10 +112,10 @@ namespace SharpGameService.Tests
         {
             _room.Initialise("id", "code", 3, false);
             var connection = CreateWebSocket();
-            _room.Join(connection);
+            _room.Join("name", "id", connection);
 
             var connection2 = CreateWebSocket();
-            _room.Join(connection2);
+            _room.Join("name", "id", connection2);
             Assert.That(_room.CurrentPlayers, Is.EqualTo(2));
         }
 

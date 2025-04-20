@@ -1,6 +1,7 @@
 ﻿using SharpGameService.Core.Events;
 using SharpGameService.Core.Exceptions;
 using SharpGameService.Core.Interfaces;
+using SharpGameService.Core.Messaging.DataModels;
 using System.Net.WebSockets;
 
 namespace SharpGameService.Core
@@ -17,7 +18,6 @@ namespace SharpGameService.Core
 
         public bool RoomClosing { get; private set; } = false;
 
-        // TODO: Have a model for that includes the player details and connection.
         private IList<WebSocket> _connections = new List<WebSocket>();
 
         private bool _closeOnEmpty = false;
@@ -57,12 +57,21 @@ namespace SharpGameService.Core
             _isInitialised = true;
         }
 
-        // TODO: Change to include something like player details?
-        public void Join(WebSocket connection)
+        public void Join(string playerName, string playerId, WebSocket connection)
         {
             if (!_isInitialised)
             {
                 throw new InvalidOperationException("The room has not been initialised");
+            }
+
+            if (string.IsNullOrWhiteSpace(playerId))
+            {
+                throw new ArgumentException("Player Id must be populated");
+            }
+
+            if (string.IsNullOrWhiteSpace(playerName))
+            {
+                throw new ArgumentException("Player Name must be populated");
             }
 
             if (_connections.Count >= MaxPlayers)
@@ -72,8 +81,7 @@ namespace SharpGameService.Core
 
             _connections.Add(connection);
 
-            // TODO: Setup data object based on player details sent with connection or the game will handle any details.
-            OnPlayerJoined?.Invoke(this, new OnPlayerJoinedEventArgs(new object()));
+            OnPlayerJoined?.Invoke(this, new OnPlayerJoinedEventArgs(new PlayerJoinedModel { PlayerId = playerId, PlayerName = playerName}));
         }
 
         public Task Process()

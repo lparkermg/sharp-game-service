@@ -17,8 +17,8 @@ namespace SharpGameService.Core.Controllers
             if (HttpContext.WebSockets.IsWebSocketRequest)
             {
                 using var socket = await HttpContext.WebSockets.AcceptWebSocketAsync();
-                // TOOD: Handle trying to join a room.
-                var success = false;
+
+                var success = house.DoesRoomExist(gameRoomId);
                 if (!success)
                 {
                     logger.LogWarning("Room not found: {gameRoomId}", gameRoomId);
@@ -28,7 +28,6 @@ namespace SharpGameService.Core.Controllers
                 else
                 {
                     logger.LogInformation("Connection established for room: {gameRoomId}", gameRoomId);
-                    // TODO: Send message back to client that they are connected.
                     await ProcessIncomingMessagesAsync(socket, gameRoomId);
                 }
             }
@@ -40,29 +39,21 @@ namespace SharpGameService.Core.Controllers
             }
         }
 
-        private async Task ProcessIncomingMessagesAsync(WebSocket webSocket, string roomId)
+        private async Task ProcessIncomingMessagesAsync(WebSocket webSocket, string providedRoomId)
         {
-            bool roomExists = house.DoesRoomExist(roomId);
-
-            if (roomExists)
-            {
-                logger.LogError("Room ({gameRoomId}) could not be found", roomId);
-                await webSocket.CloseAsync(WebSocketCloseStatus.InternalServerError, "Room not found.", CancellationToken.None);
-            }
-
             var buffer = new byte[1024 * 4];
             var msgResult = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
 
             while (!webSocket.CloseStatus.HasValue)
             {
-                await ProcessMessageAsync(buffer, webSocket);
+                await ProcessMessageAsync(buffer, webSocket, providedRoomId);
                 msgResult = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
             }
 
             await webSocket.CloseAsync(msgResult.CloseStatus.Value, msgResult.CloseStatusDescription, CancellationToken.None);
         }
 
-        private async Task ProcessMessageAsync(byte[] buffer, WebSocket socket)
+        private async Task ProcessMessageAsync(byte[] buffer, WebSocket socket, string providedRoomId)
         {
             using var stream = new MemoryStream(buffer);
             var message = await JsonSerializer.DeserializeAsync<Message>(stream);
@@ -84,7 +75,7 @@ namespace SharpGameService.Core.Controllers
                         break;
                     }
 
-                    house.Join(joinData.RoomId, joinData.RoomCode, socket);
+                    house.Join(providedRoomId, joinData.RoomCode, joinData.PlayerName, socket);
                     break;
                 case MessageType.DISCONNECT_ROOM:
                     await socket.CloseAsync(WebSocketCloseStatus.NormalClosure, "DISCONNECT_ROOM message received", CancellationToken.None);
@@ -98,7 +89,7 @@ namespace SharpGameService.Core.Controllers
                         break;
                     }
 
-                    house.MessageReceived(actionData.RoomId, actionData.ActionData);
+                    house.MessageReceived(providedRoomId, actionData.ActionData);
                     break;
                 default:
                     logger.LogError("Unknown message type: {messageType}", message.Type);

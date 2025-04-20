@@ -15,11 +15,6 @@ namespace SharpGameService.Core.Messaging.DataModels
         /// Gets or sets the Name of the player joining the room.
         /// </summary>
         public string PlayerName { get; set; } = string.Empty;
-        
-        /// <summary>
-        /// Gets or sets the Id of the room to join
-        /// </summary>
-        public string RoomId { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets the optional code of the room to join.
