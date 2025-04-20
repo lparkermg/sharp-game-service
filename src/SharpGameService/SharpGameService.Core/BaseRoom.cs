@@ -63,6 +63,7 @@ namespace SharpGameService.Core
         }
 
         // TODO: Change to include something like player details?
+        // TODO: Include room code to try and join the room.
         public void Join(WebSocket connection)
         {
             if (!_isInitialised)

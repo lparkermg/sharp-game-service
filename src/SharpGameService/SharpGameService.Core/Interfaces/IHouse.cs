@@ -1,4 +1,5 @@
-﻿using System.Net.WebSockets;
+﻿using SharpGameService.Core.Models;
+using System.Net.WebSockets;
 
 namespace SharpGameService.Core.Interfaces
 {
@@ -34,5 +35,12 @@ namespace SharpGameService.Core.Interfaces
         /// </summary>
         /// <returns>A task representing an async operation.</returns>
         Task ProcessAsync();
+
+        /// <summary>
+        /// Gets the metadata of a room with the specified ID.
+        /// </summary>
+        /// <param name="roomId">The Id of the room.</param>
+        /// <returns>The <see cref="RoomMetadata"/> of the room.</returns>
+        RoomMetadata GetRoomMetadata(string roomId);
     }
 }

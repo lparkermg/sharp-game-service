@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 using SharpGameService.Core.Exceptions;
 using SharpGameService.Core.Interfaces;
+using SharpGameService.Core.Models;
 using System.Net.WebSockets;
 
 namespace SharpGameService.Core
@@ -40,14 +41,46 @@ namespace SharpGameService.Core
             return _rooms.Any(x => x.Id == roomId);
         }
 
-        public void Join(string roomdId, string code, WebSocket connection)
+        public void Join(string roomId, string code, WebSocket connection)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrWhiteSpace(roomId))
+            {
+                throw new ArgumentException("Room Id must be populated");
+            }
+
+            if (!DoesRoomExist(roomId))
+            {
+                throw new RoomNotFoundException();
+            }
+
+            var room = _rooms.SingleOrDefault(x => x.Id == roomId && x.Code == code) ?? throw new InvalidRoomCodeException();
+
+            room.Join(connection);
         }
 
         public Task ProcessAsync()
         {
             throw new NotImplementedException();
+        }
+
+        public RoomMetadata GetRoomMetadata(string roomId)
+        {
+            if (string.IsNullOrWhiteSpace(roomId))
+            {
+                throw new ArgumentException("Room Id must be populated");
+            }
+
+            if (!DoesRoomExist(roomId))
+            {
+                throw new RoomNotFoundException();
+            }
+
+            var room = _rooms.Single(x => x.Id == roomId);
+            return new RoomMetadata
+            {
+                MaxPlayers = room.MaxPlayers,
+                CurrentPlayers = room.CurrentPlayers,
+            };
         }
     }
 }
