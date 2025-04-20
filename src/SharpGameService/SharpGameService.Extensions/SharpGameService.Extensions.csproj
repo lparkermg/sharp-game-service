@@ -4,6 +4,15 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <PackageId>SharpGameService.Extensions</PackageId>
+    <Authors>Luke Parker</Authors>
+    <Description>The extensions to the SharpGameService</Description>
+    <Copyright>Luke Parker (c) 2025</Copyright>
+    <PackageProjectUrl>https://github.com/lparkermg/sharp-game-service</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/lparkermg/sharp-game-service</RepositoryUrl>
+    <PackageTags>game,server,extensions</PackageTags>
+    <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,6 +31,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SharpGameService.Core\SharpGameService.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+	  <None Include="Documentation\README.md" Pack="true" PackagePath="\"/>
   </ItemGroup>
 
 </Project>
