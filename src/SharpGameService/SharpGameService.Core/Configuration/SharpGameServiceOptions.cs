@@ -1,0 +1,28 @@
+﻿namespace SharpGameService.Core.Configuration
+{
+    /// <summary>
+    /// Configuration options for the SharpGameService.
+    /// </summary>
+    public class SharpGameServiceOptions
+    {
+        /// <summary>
+        /// Gets or sets whether the service should run in single player mode.
+        /// </summary>
+        public bool SinglePlayer { get; set; } = true;
+
+        /// <summary>
+        /// Gets or sets the maximum players allowed in a room.
+        /// </summary>
+        public uint MaxPlayersPerRoom { get; set; } = 1;
+
+        /// <summary>
+        /// Gets or sets the maximum number of rooms allowed.
+        /// </summary>
+        public uint MaxRooms { get; set; } = 1;
+
+        /// <summary>
+        /// Gets or sets the maximum message size in kilobytes.
+        /// </summary>
+        public uint MaxMessageSizeKb { get; set; } = 4;
+    }
+}
