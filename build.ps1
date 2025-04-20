@@ -12,10 +12,17 @@ $TestProjectPath = "tests/SharpGameService.Tests"
 $OutputPath = "artifacts"
 $NugetSource = "https://api.nuget.org/v3/index.json"
 
+# Remove old artifacts
+if (Test-Path -Path $OutputPath) {
+    Write-Host "Removing old artifacts..."
+    Remove-Item -Recurse -Force -Path $OutputPath
+}
+
 # Ensure output directory exists
 if (-Not (Test-Path -Path $OutputPath)) {
     New-Item -ItemType Directory -Path $OutputPath | Out-Null
 }
+
 
 # Restore, build, and test the project
 Write-Host "Restoring dependencies..."
