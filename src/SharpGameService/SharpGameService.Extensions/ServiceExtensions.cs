@@ -9,7 +9,9 @@ namespace SharpGameService.Extensions
 {
     public static class ServiceExtensions
     {
-        public static IServiceCollection AddSharpGameService<TServiceImplementationType, TRoomType>(this IServiceCollection services, Action<SharpGameServiceOptions> options) where TServiceImplementationType : BackgroundService, IHostedService where TRoomType : BaseRoom, new()
+        public static IServiceCollection AddSharpGameService<TServiceImplementationType, TRoomType>(this IServiceCollection services, Action<SharpGameServiceOptions> options) 
+            where TServiceImplementationType : BackgroundService, IHostedService 
+            where TRoomType : BaseRoom, new()
         {
             services.Configure<SharpGameServiceOptions>(options);
 
