@@ -1,4 +1,6 @@
-﻿using SharpGameService.Core.Exceptions;
+﻿using Microsoft.Extensions.Options;
+using SharpGameService.Core.Configuration;
+using SharpGameService.Core.Exceptions;
 using SharpGameService.Core.Interfaces;
 using SharpGameService.Core.Models;
 using System.Net.WebSockets;
@@ -8,13 +10,13 @@ namespace SharpGameService.Core
     /// <summary>
     /// Basic house implementation.
     /// </summary>
-    public sealed class House<TRoomType>(uint maxPlayersPerRoom, uint maxRooms, uint maxMessageSize, bool closeRoomsOnEmpty, TimeSpan? closeWaitTime) : IHouse where TRoomType : BaseRoom, new()
+    public sealed class House<TRoomType>(IOptions<SharpGameServiceOptions> options) : IHouse where TRoomType : BaseRoom, new()
     {
-        private readonly uint _maxPlayersPerRoom = maxPlayersPerRoom;
-        private readonly uint _maxRooms = maxRooms;
-        private readonly uint _maxMessageSize = maxMessageSize;
-        private readonly bool _closeRoomsOnEmpty = closeRoomsOnEmpty;
-        private readonly TimeSpan? _closeWaitTime = closeWaitTime;
+        private readonly uint _maxPlayersPerRoom = options.Value.MaxPlayersPerRoom;
+        private readonly uint _maxRooms = options.Value.MaxRooms;
+        private readonly uint _maxMessageSize = options.Value.MaxMessageSizeKb;
+        private readonly bool _closeRoomsOnEmpty = options.Value.CloseRoomsOnEmpty;
+        private readonly TimeSpan? _closeWaitTime = options.Value.CloseWaitTime;
 
         private IList<TRoomType> _rooms = new List<TRoomType>();
 
