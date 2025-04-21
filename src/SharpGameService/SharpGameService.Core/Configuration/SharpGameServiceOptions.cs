@@ -24,5 +24,15 @@
         /// Gets or sets the maximum message size in kilobytes.
         /// </summary>
         public uint MaxMessageSizeKb { get; set; } = 4;
+
+        /// <summary>
+        /// Gets or sets whether to close rooms when they are empty.
+        /// </summary>
+        public bool CloseRoomsOnEmpty { get; set; } = false;
+
+        /// <summary>
+        /// Gets or sets the time to wait before closing a room when it is empty.
+        /// </summary>
+        public TimeSpan? CloseWaitTime { get; set; } = null;
     }
 }

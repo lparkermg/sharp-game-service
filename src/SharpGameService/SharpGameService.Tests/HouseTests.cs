@@ -1,4 +1,8 @@
-﻿using SharpGameService.Core;
+﻿using AutoFixture;
+using AutoFixture.AutoMoq;
+using Microsoft.Extensions.Options;
+using SharpGameService.Core;
+using SharpGameService.Core.Configuration;
 using SharpGameService.Core.Exceptions;
 using System.Net.WebSockets;
 
@@ -10,10 +14,21 @@ namespace SharpGameService.Tests
 
         private MemoryStream _connectionStream;
 
+        private Fixture _fixture;
         [SetUp]
         public void SetUp()
         {
-            _house = new House<BaseRoom>(1, 1, 4, true, TimeSpan.FromSeconds(30));
+            _fixture = new Fixture();
+            _fixture.Customize(new AutoMoqCustomization());
+
+            var options = _fixture.Create<IOptions<SharpGameServiceOptions>>();
+            options.Value.MaxPlayersPerRoom = 1;
+            options.Value.MaxRooms = 1;
+            options.Value.MaxMessageSizeKb = 4;
+            options.Value.CloseRoomsOnEmpty = true;
+            options.Value.CloseWaitTime = TimeSpan.FromSeconds(30);
+
+            _house = new House<BaseRoom>(options);
             _connectionStream = new MemoryStream();
         }
 
