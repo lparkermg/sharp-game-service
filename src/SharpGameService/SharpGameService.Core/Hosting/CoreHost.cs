@@ -3,14 +3,15 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using SharpGameService.Core.Configuration;
 using SharpGameService.Core.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SharpGameService.Core.Hosting
 {
+    /// <summary>
+    /// Base class for the core host of the game service.
+    /// </summary>
+    /// <param name="logger">Logging for the core host service.</param>
+    /// <param name="options">Sharp Game Service Options.</param>
+    /// <param name="house">The house that is being hosted.</param>
     public abstract class CoreHost(ILogger<CoreHost> logger, IOptions<SharpGameServiceOptions> options, IHouse house) : BackgroundService
     {
         private readonly SharpGameServiceOptions _options = options.Value;
