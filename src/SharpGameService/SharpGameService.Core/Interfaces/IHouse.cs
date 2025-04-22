@@ -49,7 +49,12 @@ namespace SharpGameService.Core.Interfaces
         /// </summary>
         /// <param name="roomId">Id of the room</param>
         /// <param name="message">Message data.</param>
-        /// <returns></returns>
         void MessageReceived(string roomId, string message);
+
+        /// <summary>
+        /// Closes all rooms in the house.
+        /// </summary>
+        /// <returns>A task representing an async operation.</returns>
+        Task CloseHouse();
     }
 }

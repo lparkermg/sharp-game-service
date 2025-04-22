@@ -2,6 +2,7 @@ using AutoFixture;
 using AutoFixture.AutoMoq;
 using SharpGameService.Core;
 using SharpGameService.Core.Exceptions;
+using SharpGameService.Tests.Implementations;
 using System.Net.WebSockets;
 
 namespace SharpGameService.Tests
@@ -12,7 +13,7 @@ namespace SharpGameService.Tests
 
         private MemoryStream _connectionStream;
 
-        private BaseRoom _room;
+        private TestRoom _room;
 
         [OneTimeSetUp]
         public void OneTimeSetup()
@@ -24,7 +25,7 @@ namespace SharpGameService.Tests
         [SetUp]
         public void Setup()
         { 
-            _room = new BaseRoom();
+            _room = new TestRoom();
             _connectionStream = new MemoryStream();
         }
 
@@ -141,7 +142,7 @@ namespace SharpGameService.Tests
             Assert.That(_room.CurrentPlayers, Is.EqualTo(1));
         }
 
-        // TODO: FInd a way to test the time between last connection and room closing.
+        // TODO: Find a way to test the time between last connection and room closing.
         [Test]
         public async Task Process_GivenNoConnections_ClosesRoom()
         {
@@ -150,6 +151,24 @@ namespace SharpGameService.Tests
             await _room.Process();
 
             Assert.That(_room.RoomClosing, Is.True);
+        }*/
+
+        [Test]
+        public void Close_GivenUninitialisedRoom_ThrowsInvalidOperationException()
+        {
+            Assert.That(() => _room.Close(),
+                Throws.InvalidOperationException.With.Message.EqualTo("The room has not been initialised"));
+        }
+
+        // TODO: Find a way to test the connection closing logic.
+        /*[Test]
+        public async Task Close_GivenInitialisedRoom_ClosesConnections()
+        {
+            _room.Initialise("id", "code", 1, true);
+            var connection = CreateWebSocket();
+            _room.Join("test", "test", connection);
+            await _room.Close();
+            Assert.That(connection.CloseStatus.Value, Is.EqualTo(WebSocketCloseStatus.NormalClosure));
         }*/
 
         private WebSocket CreateWebSocket()

@@ -57,6 +57,12 @@ namespace SharpGameService.Core.Interfaces
         Task Process();
 
         /// <summary>
+        /// Closes the room and all connections.
+        /// </summary>
+        /// <returns>A task representing an async operation.</returns>
+        Task Close();
+
+        /// <summary>
         /// Handles messages received outside of the room (usually by the websocket connection). 
         /// </summary>
         /// <param name="data">The message data for the implemented room to process.</param>

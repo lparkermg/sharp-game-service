@@ -11,7 +11,7 @@ namespace SharpGameService.Core
     /// 
     /// This handles the basic functionality of a room, such as joining, leaving and processing. Along with the non-specific validation needed for each.
     /// </summary>
-    public class BaseRoom : IRoom
+    public abstract class BaseRoom : IRoom
     {
         /// <inheritdoc />
         public uint MaxPlayers { get; private set; }
@@ -46,7 +46,7 @@ namespace SharpGameService.Core
         public delegate void OnPlayerDisconnectedEventHandler(object sender, OnPlayerDisconnectedEventArgs data);
 
         /// <inheritdoc />
-        public void Initialise(string roomId, string roomCode, uint maxPlayers, bool closeOnEmpty, TimeSpan? closeWaitTime = null)
+        public virtual void Initialise(string roomId, string roomCode, uint maxPlayers, bool closeOnEmpty, TimeSpan? closeWaitTime = null)
         {
             if (string.IsNullOrWhiteSpace(roomId))
             {
@@ -69,7 +69,7 @@ namespace SharpGameService.Core
         }
 
         /// <inheritdoc />
-        public void Join(string playerName, string playerId, WebSocket connection)
+        public virtual void Join(string playerName, string playerId, WebSocket connection)
         {
             if (!_isInitialised)
             {
@@ -97,7 +97,7 @@ namespace SharpGameService.Core
         }
 
         /// <inheritdoc />
-        public Task Process()
+        public virtual Task Process()
         {
             if (!_isInitialised)
             {
@@ -131,8 +131,22 @@ namespace SharpGameService.Core
             return Task.CompletedTask;
         }
 
+        public virtual async Task Close()
+        {
+            if (!_isInitialised)
+            {
+                throw new InvalidOperationException("The room has not been initialised");
+            }
+
+            foreach (var connection in _connections)
+            {
+                await connection.CloseAsync(WebSocketCloseStatus.NormalClosure, "Room is being closed", CancellationToken.None);
+            }
+            _connections.Clear();
+        }
+
         /// <inheritdoc />
-        public void HandleReceivedMessage(string data)
+        public virtual void HandleReceivedMessage(string data)
         {
             if (!_isInitialised)
             {
