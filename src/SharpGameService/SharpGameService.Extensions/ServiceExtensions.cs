@@ -4,13 +4,32 @@ using Microsoft.Extensions.Hosting;
 using SharpGameService.Core.Configuration;
 using SharpGameService.Core;
 using SharpGameService.Core.Interfaces;
+using SharpGameService.Core.Hosting;
 
 namespace SharpGameService.Extensions
 {
     public static class ServiceExtensions
     {
         /// <summary>
-        /// Adds the SharpGameService to the service collection.
+        /// Adds the SharpGameService to the service collection with the default host implementatoin.
+        /// </summary>
+        /// <typeparam name="TRoomType">The custom room type (this is where the game logic will be processed and handled)</typeparam>
+        /// <param name="services">The current service collection.</param>
+        /// <param name="options">The configuration setup.</param>
+        /// <returns>An updated service collection.</returns>
+        public static IServiceCollection AddSharpGameService<TRoomType>(this IServiceCollection services, Action<SharpGameServiceOptions> options)
+            where TRoomType : BaseRoom, new()
+        {
+            services.Configure<SharpGameServiceOptions>(options);
+
+            services.AddHostedService<CoreHost>();
+            services.AddSingleton<IHouse, House<TRoomType>>();
+
+            return services;
+        }
+
+        /// <summary>
+        /// Adds the SharpGameService to the service collection with a specific implementation type.
         /// </summary>
         /// <typeparam name="TServiceImplementationType">The implementation type of the hosted service.</typeparam>
         /// <typeparam name="TRoomType">The custom room type (this is where the game logic will be processed and handled)</typeparam>
@@ -18,7 +37,7 @@ namespace SharpGameService.Extensions
         /// <param name="options">The configuration setup.</param>
         /// <returns>An updated service collection.</returns>
         public static IServiceCollection AddSharpGameService<TServiceImplementationType, TRoomType>(this IServiceCollection services, Action<SharpGameServiceOptions> options) 
-            where TServiceImplementationType : BackgroundService, IHostedService 
+            where TServiceImplementationType : CoreHost, new()
             where TRoomType : BaseRoom, new()
         {
             services.Configure<SharpGameServiceOptions>(options);
