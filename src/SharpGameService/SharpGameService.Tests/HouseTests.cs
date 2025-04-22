@@ -4,13 +4,14 @@ using Microsoft.Extensions.Options;
 using SharpGameService.Core;
 using SharpGameService.Core.Configuration;
 using SharpGameService.Core.Exceptions;
+using SharpGameService.Tests.Implementations;
 using System.Net.WebSockets;
 
 namespace SharpGameService.Tests
 {
     public class HouseTests
     {
-        private House<BaseRoom> _house;
+        private House<TestRoom> _house;
 
         private MemoryStream _connectionStream;
 
@@ -28,7 +29,7 @@ namespace SharpGameService.Tests
             options.Value.CloseRoomsOnEmpty = true;
             options.Value.CloseWaitTime = TimeSpan.FromSeconds(30);
 
-            _house = new House<BaseRoom>(options);
+            _house = new House<TestRoom>(options);
             _connectionStream = new MemoryStream();
         }
 

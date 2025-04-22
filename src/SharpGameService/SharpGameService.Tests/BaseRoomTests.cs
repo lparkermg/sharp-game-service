@@ -2,6 +2,7 @@ using AutoFixture;
 using AutoFixture.AutoMoq;
 using SharpGameService.Core;
 using SharpGameService.Core.Exceptions;
+using SharpGameService.Tests.Implementations;
 using System.Net.WebSockets;
 
 namespace SharpGameService.Tests
@@ -12,7 +13,7 @@ namespace SharpGameService.Tests
 
         private MemoryStream _connectionStream;
 
-        private BaseRoom _room;
+        private TestRoom _room;
 
         [OneTimeSetUp]
         public void OneTimeSetup()
@@ -24,7 +25,7 @@ namespace SharpGameService.Tests
         [SetUp]
         public void Setup()
         { 
-            _room = new BaseRoom();
+            _room = new TestRoom();
             _connectionStream = new MemoryStream();
         }
 
