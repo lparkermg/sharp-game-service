@@ -131,6 +131,20 @@ namespace SharpGameService.Core
             return Task.CompletedTask;
         }
 
+        public virtual async Task Close()
+        {
+            if (!_isInitialised)
+            {
+                throw new InvalidOperationException("The room has not been initialised");
+            }
+
+            foreach (var connection in _connections)
+            {
+                await connection.CloseAsync(WebSocketCloseStatus.NormalClosure, "Room is being closed", CancellationToken.None);
+            }
+            _connections.Clear();
+        }
+
         /// <inheritdoc />
         public virtual void HandleReceivedMessage(string data)
         {

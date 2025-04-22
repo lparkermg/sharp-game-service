@@ -25,6 +25,7 @@ namespace SharpGameService.Extensions
 
             services.AddHostedService<TServiceImplementationType>();
             services.AddSingleton<IHouse, House<TRoomType>>();
+
             return services;
         }
 

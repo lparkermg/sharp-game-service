@@ -12,11 +12,11 @@ namespace SharpGameService.Core
     /// </summary>
     public sealed class House<TRoomType>(IOptions<SharpGameServiceOptions> options) : IHouse where TRoomType : BaseRoom, new()
     {
-        private readonly uint _maxPlayersPerRoom = options.Value.MaxPlayersPerRoom;
-        private readonly uint _maxRooms = options.Value.MaxRooms;
+        private readonly uint _maxPlayersPerRoom = options.Value.Rooms.MaxPlayersPerRoom;
+        private readonly uint _maxRooms = options.Value.House.MaxRooms;
         private readonly uint _maxMessageSize = options.Value.MaxMessageSizeKb;
-        private readonly bool _closeRoomsOnEmpty = options.Value.CloseRoomsOnEmpty;
-        private readonly TimeSpan? _closeWaitTime = options.Value.CloseWaitTime;
+        private readonly bool _closeRoomsOnEmpty = options.Value.Rooms.CloseRoomsOnEmpty;
+        private readonly TimeSpan? _closeWaitTime = options.Value.Rooms.CloseWaitTime;
 
         private IList<TRoomType> _rooms = new List<TRoomType>();
 
@@ -96,6 +96,15 @@ namespace SharpGameService.Core
                 MaxPlayers = room.MaxPlayers,
                 CurrentPlayers = room.CurrentPlayers,
             };
+        }
+
+        /// <inheritdoc />
+        public async Task CloseHouse()
+        {
+            foreach (var room in _rooms)
+            {
+                await room.Close();
+            }
         }
 
         /// <inheritdoc />

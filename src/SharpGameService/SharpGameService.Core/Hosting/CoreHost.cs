@@ -26,10 +26,12 @@ namespace SharpGameService.Core.Hosting
             return base.StartAsync(cancellationToken);
         }
 
-        public override Task StopAsync(CancellationToken cancellationToken)
+        public override async Task StopAsync(CancellationToken cancellationToken)
         {
-            // TODO: Implement house cleanup logic (closing connections etc)
-            return base.StopAsync(cancellationToken);
+            logger.LogInformation("Service is stopping, closing all rooms.");
+            await house.CloseHouse();
+            logger.LogInformation("All rooms closed.");
+            await base.StopAsync(cancellationToken);
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)

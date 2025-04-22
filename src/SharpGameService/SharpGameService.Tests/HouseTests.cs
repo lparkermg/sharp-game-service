@@ -23,11 +23,11 @@ namespace SharpGameService.Tests
             _fixture.Customize(new AutoMoqCustomization());
 
             var options = _fixture.Create<IOptions<SharpGameServiceOptions>>();
-            options.Value.MaxPlayersPerRoom = 1;
-            options.Value.MaxRooms = 1;
+            options.Value.Rooms.MaxPlayersPerRoom = 1;
+            options.Value.House.MaxRooms = 1;
             options.Value.MaxMessageSizeKb = 4;
-            options.Value.CloseRoomsOnEmpty = true;
-            options.Value.CloseWaitTime = TimeSpan.FromSeconds(30);
+            options.Value.Rooms.CloseRoomsOnEmpty = true;
+            options.Value.Rooms.CloseWaitTime = TimeSpan.FromSeconds(30);
 
             _house = new House<TestRoom>(options);
             _connectionStream = new MemoryStream();
@@ -191,6 +191,8 @@ namespace SharpGameService.Tests
         }
 
         // TODO: Implement MessageReceived valid tests when there's a good way to do it.
+
+        // TODO: Implement CloseAll tests when there's a good way to do it.
 
         private WebSocket CreateWebSocket()
         {
