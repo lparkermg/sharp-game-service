@@ -22,7 +22,7 @@ namespace SharpGameService.Extensions
         {
             services.Configure<SharpGameServiceOptions>(options);
 
-            services.AddHostedService<CoreHost>();
+            services.AddHostedService<DefaultCoreHost>();
             services.AddSingleton<IHouse, House<TRoomType>>();
 
             return services;
